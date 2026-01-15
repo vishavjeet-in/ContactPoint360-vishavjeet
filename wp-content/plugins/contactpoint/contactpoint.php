@@ -27,3 +27,22 @@ add_filter('script_loader_tag', function ($tag, $handle) {
     }
     return $tag;
 }, 10, 2);
+
+
+add_action('wp_ajax_load_data', 'secure_load_data');
+add_action('wp_ajax_nopriv_load_data', 'secure_load_data');
+
+function secure_load_data() {
+    check_ajax_referer('load_nonce', 'nonce');
+
+    $filter = isset($_POST['filter'])
+        ? sanitize_text_field($_POST['filter'])
+        : '';
+
+    if (empty($filter)) {
+        wp_send_json_error('No filter provided');
+    }
+
+    echo esc_html($filter);
+    wp_die();
+}
