@@ -46,3 +46,10 @@ function secure_load_data() {
     echo esc_html($filter);
     wp_die();
 }
+
+add_filter('script_loader_tag', function ($tag, $handle) {
+    if ($handle === 'jquery-core') {
+        return $tag; 
+    }
+    return str_replace(' src', ' defer src', $tag);
+}, 10, 2);
